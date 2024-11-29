@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>シミュレーション結果</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/chat.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- jsPDF と html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- jsPDF と html2canvas -->
+</head>
+<body>
+    <header>
+        <p>学生向け資産形成シミュレーション</p>
+        <h1>資産が日進月歩</h1>
+    </header>
+    <div class="simulation-title">
+        <h2>シミュレーション結果</h2>
+    </div>
+    <main id="result-container">
+        {% if gpt_response %}
+        {{ gpt_response | safe }}
+        {% else %}
+        <p>No response yet. Type a message and click "Send"!</p>
+        {% endif %}
+    </main>
+    <!-- <a href="/download_pdf" class="button">結果をPDFでダウンロード</a> -->
+     <!-- ダウンロード方法を変更 -->
+    <a href="#" id="download-pdf" class="button">結果をPDFでダウンロード</a>
+    <a href="/entry" class="button">もう一度資産シミュレーションをしてみる</a>
+
+    <!-- 追加部分(pdf化の実装) -->
+    <script>
+        // 「結果をPDFでダウンロード」ボタンにクリックイベントを追加
+        document.getElementById('download-pdf').addEventListener('click', () => {
+            const { jsPDF } = window.jspdf; // jsPDFの読み込み
+    
+            // PDFに変換する要素を取得
+            const resultContainer = document.getElementById('result-container');
+    
+            // html2canvasでHTMLをキャプチャ
+            html2canvas(resultContainer, {
+                scale: 2, // 高解像度でキャプチャ
+                useCORS: true, // クロスオリジン画像の問題を防ぐ
+                scrollX: 0,
+                scrollY: 0, // スクロール位置の影響を排除
+            }).then(canvas => {
+                const pdf = new jsPDF('p', 'mm', 'a4'); // 縦向きのA4サイズでPDFを作成
+    
+                const imgData = canvas.toDataURL('image/png'); // キャプチャしたデータを画像として取得
+                const imgWidth = 190; // A4幅 - 余白 (mm)
+                const pageHeight = 277; // A4高さ - 余白 (mm)
+                const imgHeight = (canvas.height * imgWidth) / canvas.width; // アスペクト比を保つ計算
+                const totalPages = Math.ceil(imgHeight / pageHeight); // ページ数を計算
+    
+                let position = 10; // PDF上の描画開始位置を初期化 (余白を追加)
+    
+                // ページごとに画像を切り取り、PDFに描画
+                for (let i = 0; i < totalPages; i++) {
+                    const sourceY = i * canvas.height / totalPages; // 元画像からの切り取り開始位置
+                    const sectionCanvas = document.createElement('canvas'); // 新しいキャンバスを作成
+                    sectionCanvas.width = canvas.width;
+                    sectionCanvas.height = canvas.height / totalPages;
+    
+                    const ctx = sectionCanvas.getContext('2d');
+                    ctx.drawImage(canvas, 0, -sourceY, canvas.width, canvas.height); // 画像を切り取り
+    
+                    const sectionImgData = sectionCanvas.toDataURL('image/png'); // 切り取った部分を画像データに変換
+    
+                    // PDFに追加
+                    pdf.addImage(
+                        sectionImgData,
+                        'PNG',
+                        10, // 左の余白を追加
+                        position,
+                        imgWidth,
+                        pageHeight
+                    );
+    
+                    if (i < totalPages - 1) {
+                        pdf.addPage(); // 次のページを追加
+                    }
+                }
+    
+                // PDFを保存
+                pdf.save('simulation_result.pdf'); // 保存処理
+            });
+        });
+    </script>
+    
+    <!-- 追加部分(pdf化の実装) -->
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>資産形成シミュレーション</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #4CAF50;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    header h1 {
+      color: white;
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    main {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+    h2 {
+      text-align: center;
+      color: #4CAF50;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    input[type="radio"], input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    .question {
+      display: none;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .question.active {
+      display: block;
+    }
+    button {
+      display: block;
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>資産形成シミュレーション</h1>
+  </header>
+  <main id="simulation">
+    <h2>全12問です！</h2>
+    <form id="simulation-form" action="/chat" method="post">
+      <!-- 質問1 -->
+      <div class="question active" id="question-1">
+        <h2>質問1</h2>
+        <h2>興味がある分野や業界は？（複数選択可）</h2>
+        <label><input type="checkbox" name="interest" value="IT・テクノロジー"> IT・テクノロジー</label>
+        <label><input type="checkbox" name="interest" value="医療・福祉"> 医療・福祉</label>
+        <label><input type="checkbox" name="interest" value="教育・研究"> 教育・研究</label>
+        <label><input type="checkbox" name="interest" value="金融・ビジネス"> 金融・ビジネス</label>
+        <label><input type="checkbox" name="interest" value="クリエイティブ"> クリエイティブ（アート・デザイン・メディア）</label>
+        <label><input type="checkbox" name="interest" value="エネルギー・環境"> エネルギー・環境</label>
+        <label><input type="checkbox" name="interest" value="エンターテインメント"> エンターテインメント</label>
+        <label><input type="checkbox" name="interest" value="サービス業・観光"> サービス業・観光</label>
+        <label><input type="checkbox" name="interest" value="公務員"> 公務員</label>
+        <button type="button" onclick="showNextQuestion(2)">次へ</button>
+      </div>
+
+      <!-- 質問2 -->
+      <div class="question" id="question-2">
+        <h2>質問2</h2>
+        <h2>得意なこと・スキルは？（複数選択可）</h2>
+        <label><input type="checkbox" name="skills" value="コミュニケーション"> コミュニケーション</label>
+        <label><input type="checkbox" name="skills" value="技術的なスキル"> 技術的なスキル</label>
+        <label><input type="checkbox" name="skills" value="問題解決力"> 問題解決力</label>
+        <label><input type="checkbox" name="skills" value="創造力"> 創造力</label>
+        <label><input type="checkbox" name="skills" value="分析力"> 分析力</label>
+        <label><input type="checkbox" name="skills" value="マネジメントやリーダーシップ"> マネジメントやリーダーシップ</label>
+        <label><input type="checkbox" name="skills" value="細かい作業や注意深さ"> 細かい作業や注意深さ</label>
+        <button type="button" onclick="showNextQuestion(3)">次へ</button>
+      </div>
+
+      <!-- 質問3 -->
+      <div class="question" id="question-3">
+        <h2>質問3</h2>
+        <h2>どのような働き方に魅力を感じますか？</h2>
+        <label><input type="radio" name="working_style" value="安定した職場"> 安定した職場で働きたい</label>
+        <label><input type="radio" name="working_style" value="挑戦的で自由な働き方がしたい"> 挑戦的で自由な働き方がしたい</label>
+        <label><input type="radio" name="working_style" value="チームで協力して働きたい"> チームで協力して働きたい</label>
+        <label><input type="radio" name="working_style" value="一人で集中できる環境が良い"> 一人で集中できる環境が良い</label>
+        <button type="button" onclick="showNextQuestion(4)">次へ</button>
+      </div>
+
+      <!-- 質問4 -->
+      <div class="question" id="question-4">
+        <h2>質問4</h2>
+        <h2>将来どのような生活を目指していますか？</h2>
+        <label><input type="radio" name="future_life" value="都市部で快適に暮らしたい"> 都市部で快適に暮らしたい</label>
+        <label><input type="radio" name="future_life" value="地方でのんびり暮らしたい"> 地方でのんびり暮らしたい</label>
+        <label><input type="radio" name="future_life" value="海外で生活したい"> 海外で生活したい</label>
+        <label><input type="radio" name="future_life" value="ミニマリスト的な生活で良い"> ミニマリスト的な生活で良い</label>
+        <button type="button" onclick="showNextQuestion(5)">次へ</button>
+      </div>
+
+      <!-- 質問5 -->
+      <div class="question" id="question-5">
+        <h2>質問5</h2>
+        <h2>目標とする年収はどのくらいですか？</h2>
+        <label><input type="radio" name="target_income" value="300万円未満"> 300万円未満（控えめ）</label>
+        <label><input type="radio" name="target_income" value="300～500万円"> 300～500万円（平均的）</label>
+        <label><input type="radio" name="target_income" value="500～800万円"> 500～800万円（少し高め）</label>
+        <label><input type="radio" name="target_income" value="800万円以上"> 800万円以上（高収入）</label>
+        <button type="button" onclick="showNextQuestion(6)">次へ</button>
+      </div>
+
+      <!-- 質問6 -->
+      <div class="question" id="question-6">
+        <h2>質問6</h2>
+        <h2>将来の家族構成をどのように考えていますか？</h2>
+        <label><input type="radio" name="family_plan" value="独身"> 独身で暮らす</label>
+        <label><input type="radio" name="family_plan" value="夫婦"> 配偶者と二人暮らし</label>
+        <label><input type="radio" name="family_plan" value="配偶者と子ども（1～2人）"> 配偶者と子ども（1～2人）を持つ</label>
+        <label><input type="radio" name="family_plan" value="配偶者と子ども（3人以上）"> 配偶者と子ども（3人以上）を持つ</label>
+        <button type="button" onclick="showNextQuestion(7)">次へ</button>
+      </div>
+
+      <!-- 質問7 -->
+      <div class="question" id="question-7">
+        <h2>質問7</h2>
+        <h2>どのくらいのペースで貯蓄を増やしたいですか？</h2>
+        <label><input type="radio" name="saving_plan" value="少しずつ"> 少しずつ（年間50万円未満）</label>
+        <label><input type="radio" name="saving_plan" value="しっかり"> しっかり（年間50～100万円程度）</label>
+        <label><input type="radio" name="saving_plan" value="積極的に"> 積極的に（年間100万円以上）</label>
+        <button type="button" onclick="showNextQuestion(8)">次へ</button>
+      </div>
+
+      <!-- 質問8 -->
+      <div class="question" id="question-8">
+        <h2>質問8</h2>
+        <h2>副業に興味はありますか？</h2>
+        <label><input type="radio" name="side_job_interest" value="とても興味がある"> とても興味がある</label>
+        <label><input type="radio" name="side_job_interest" value="少し興味がある"> 少し興味がある</label>
+        <label><input type="radio" name="side_job_interest" value="特に興味がない"> 特に興味がない</label>
+        <button type="button" onclick="showNextQuestion(9)">次へ</button>
+      </div>
+
+      <!-- 質問9 -->
+      <div class="question" id="question-9">
+        <h2>質問9</h2>
+        <h2>興味がある副業はどれですか？（複数選択可）</h2>
+        <label><input type="checkbox" name="side_job" value="スキル活用"> スキル活用</label>
+        <label><input type="checkbox" name="side_job" value="コンテンツ制作"> コンテンツ制作</label>
+        <label><input type="checkbox" name="side_job" value="物販"> 物販</label>
+        <label><input type="checkbox" name="side_job" value="教育やコーチング"> 教育やコーチング</label>
+        <label><input type="checkbox" name="side_job" value="投資や資産運用"> 投資や資産運用</label>
+        <button type="button" onclick="showNextQuestion(10)">次へ</button>
+      </div>
+
+      <!-- 質問10 -->
+      <div class="question" id="question-10">
+        <h2>質問10</h2>
+        <h2>投資に対する考え方は？</h2>
+        <label><input type="radio" name="investment_mindset" value="リスクを取って積極的に"> リスクを取って積極的に</label>
+        <label><input type="radio" name="investment_mindset" value="安全性を重視して守りたい"> 安全性を重視して守りたい</label>
+        <label><input type="radio" name="investment_mindset" value="興味がない"> 興味がない</label>
+        <button type="button" onclick="showNextQuestion(11)">次へ</button>
+      </div>
+
+      <!-- 質問11 -->
+      <div class="question" id="question-11">
+        <h2>質問11</h2>
+        <h2>働く上で最も大切にしたい価値観は何ですか？</h2>
+        <label><input type="radio" name="work_values" value="安定性"> 安定性</label>
+        <label><input type="radio" name="work_values" value="自由な働き方"> 自由な働き方</label>
+        <label><input type="radio" name="work_values" value="高収入"> 高収入</label>
+        <label><input type="radio" name="work_values" value="社会貢献"> 社会貢献</label>
+        <button type="button" onclick="showNextQuestion(12)">次へ</button>
+      </div>
+
+      <!-- 質問12 -->
+      <div class="question" id="question-12">
+        <h2>質問12</h2>
+        <h2>お金の使い方で優先するものは何ですか？</h2>
+        <label><input type="radio" name="money_priority" value="趣味や娯楽"> 趣味や娯楽</label>
+        <label><input type="radio" name="money_priority" value="貯蓄や資産運用"> 貯蓄や資産運用</label>
+        <label><input type="radio" name="money_priority" value="家族や友人との時間"> 家族や友人との時間</label>
+        <label><input type="radio" name="money_priority" value="自己投資"> 自己投資</label>
+        <button type="button" onclick="showNextQuestion(13)">次へ</button>
+      </div>
+      <!-- 最後の画面 -->
+    <div class="question" id="question-13">
+        <h2>ありがとうございました！</h2>
+        <p style="text-align: center; margin-top: 20px;">結果を表示するには、「送信」ボタンを押して下さい。</p>
+        <p style="text-align: center; margin-top: 20px;">※分析に少々お時間をいただきます（数十秒ほど）</p>
+        <button type="submit">送信</button>
+    </div>
+    </form>
+  </main>
+  <script>
+    function showNextQuestion(nextId) {
+      const currentQuestion = document.querySelector('.question.active');
+      const nextQuestion = document.getElementById(`question-${nextId}`);
+      
+      // 次の質問を表示する
+      if (nextQuestion) {
+        nextQuestion.classList.add('active');
+        // スムーズにスクロールして次の質問を表示
+        nextQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function submitAnswers() {
+      alert('データを送信しました！');
+    }
+  </script>
+</body>
+</html>
