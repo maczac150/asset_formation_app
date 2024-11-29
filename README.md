@@ -21,7 +21,9 @@
    pip install -r requirements.txt
    ```
 5. OpenAI の公式サイトにサインイン後、API キーを取得する。.env ファイルに以下を追記
+   ```bash
    OPENAI_API_KEY=hogehoge
+   ```
 
 ## 使用方法
 
@@ -29,4 +31,4 @@
    ```bash
    python3 run.py
    ```
-2. ローカルサーバーにアクセス(http://127.0.0.1:8000)
+2. ローカルサーバーにアクセス (http://127.0.0.1:8000)
